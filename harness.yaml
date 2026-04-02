@@ -1,0 +1,35 @@
+pipeline:
+  name: harness
+  identifier: harness
+  projectIdentifier: default_project
+  orgIdentifier: default
+  stages:
+    - stage:
+        name: Run Script
+        identifier: run_script
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: Hello Step
+                  identifier: hello_step
+                  spec:
+                    shell: Bash
+                    executionTarget:
+                      type: Delegate
+                    source:
+                      type: Inline
+                      spec:
+                        script: |
+                          echo "Hello from Harness 🎉"
+                          echo "Running on delegate machine"
+                          hostname
+                          date
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: MarkAsFailure
