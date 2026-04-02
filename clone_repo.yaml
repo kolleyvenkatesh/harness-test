@@ -1,0 +1,47 @@
+pipeline:
+  name: clone-repo
+  identifier: clone_repo
+  projectIdentifier: default_project
+  orgIdentifier: default
+
+  stages:
+    - stage:
+        name: Clone Stage
+        identifier: clone_stage
+        type: Custom
+
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: Clone GitHub Repo
+                  identifier: clone_repo_step
+                  spec:
+                    shell: Bash
+                    executionTarget:
+                      type: Delegate
+
+                    source:
+                      type: Inline
+                      spec:
+                        script: |
+                          echo "===== CLONING REPO ====="
+
+                          # Clean old repo
+                          rm -rf app
+
+                          # Clone repo (PUBLIC repo)
+                          git clone https://github.com/<your-username>/<your-repo>.git app
+
+                          cd app
+
+                          echo "===== FILES ====="
+                          ls -ltr
+
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: MarkAsFailure
