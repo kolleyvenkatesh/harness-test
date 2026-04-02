@@ -15,8 +15,8 @@ pipeline:
             steps:
               - step:
                   type: ShellScript
-                  name: Get Docker Images
-                  identifier: get_images
+                  name: Fetch Docker Images
+                  identifier: fetch_images
                   spec:
                     shell: Bash
                     executionTarget:
@@ -26,13 +26,18 @@ pipeline:
                       type: Inline
                       spec:
                         script: |
-                          echo "Fetching Docker images..."
+                          echo "===== Fetching Docker Images ====="
 
-                          # Install jq if missing
-                          which jq || sudo yum install -y jq
+                          # Replace with your Docker Hub username/org
+                          USERNAME="kolleyvenkatesh"
 
-                          curl -s "https://hub.docker.com/v2/repositories/kolleyvenkatesh/" \
-                          | jq -r '.results[].name'
+                          echo "Images under $USERNAME:"
+
+                          curl -s "https://hub.docker.com/v2/repositories/$USERNAME/" \
+                          | grep -o '"name":"[^"]*' \
+                          | cut -d '"' -f4
+
+                          echo "===== Done ====="
 
         failureStrategies:
           - onFailure:
