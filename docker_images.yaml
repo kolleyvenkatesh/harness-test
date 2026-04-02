@@ -1,0 +1,42 @@
+pipeline:
+  name: list-docker-images
+  identifier: list_docker_images
+  projectIdentifier: default_project
+  orgIdentifier: default
+
+  stages:
+    - stage:
+        name: List Images
+        identifier: list_images
+        type: Custom
+
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: Get Docker Images
+                  identifier: get_images
+                  spec:
+                    shell: Bash
+                    executionTarget:
+                      type: Delegate
+
+                    source:
+                      type: Inline
+                      spec:
+                        script: |
+                          echo "Fetching Docker images..."
+
+                          # Install jq if missing
+                          which jq || sudo yum install -y jq
+
+                          curl -s "https://hub.docker.com/v2/repositories/kolleyvenkatesh/" \
+                          | jq -r '.results[].name'
+
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: MarkAsFailure
