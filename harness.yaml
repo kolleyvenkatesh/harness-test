@@ -27,9 +27,3 @@ pipeline:
                           echo "Running on delegate machine"
                           hostname
                           date
-        failureStrategies:
-          - onFailure:
-              errors:
-                - AllErrors
-              action:
-                type: MarkAsFailure
